@@ -2,8 +2,8 @@
 
 [Simple Transformers](https://simpletransformers.ai/)の[ConvAIModel](https://simpletransformers.ai/docs/convAI-specifics/)を、NTT様の公開してくださったJPersonaChatでファインチューニングするためのプログラムです。
 
-ConvAIModelを日本語GPT2に対応させたファインチューニング用のスクリプトと、JPersonaChatをConvAIModelでファインチューニングするためのデータフォーマットに変換するためのスクリプトを含みます。
-フォーマットの詳細は[ここ](https://simpletransformers.ai/docs/convAI-data-formats/#data-formats)で確認してください。
+ConvAIModelをrinna社様の[日本語GPT2](https://huggingface.co/rinna/japanese-gpt2-medium)に対応させたファインチューニング用のスクリプトと、JPersonaChatをConvAIModelでファインチューニングするためのデータフォーマットに変換するためのスクリプトを含みます。
+データフォーマットの詳細は[ここ](https://simpletransformers.ai/docs/convAI-data-formats/#data-formats)で確認してください。
 
 ## 1. データ準備
 
