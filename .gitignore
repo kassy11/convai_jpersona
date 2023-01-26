@@ -614,3 +614,5 @@ ipython_config.py
 #   git rm -r .ipynb_checkpoints/
 
 
+data/japanese_persona_chat.xlsx
+data/converted.json
