@@ -20,13 +20,6 @@ CONVERTED_KEYS = {
     "HISTORY": "history",
 }
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--data_path", default="./data/japanese_persona_chat.xlsx")
-parser.add_argument("--out_path", default="./data/converted.json")
-args = parser.parse_args()
-DATA_PATH = args.data_path
-OUT_PATH = args.out_path
-
 
 def get_data(data_path):
     wb = openpyxl.load_workbook(data_path, data_only=True)
@@ -140,12 +133,16 @@ def convert_data(persona_data, dialog_data, all_utterance):
     return converted_data
 
 
-def main():
-    persona_data, dialog_data, all_utterance = get_data(DATA_PATH)
+def main(args):
+    persona_data, dialog_data, all_utterance = get_data(args.data_path)
     converted_data = convert_data(persona_data, dialog_data, all_utterance)
-    with open(OUT_PATH, "w", encoding="utf-8") as f:
+    with open(args.out_path, "w", encoding="utf-8") as f:
         json.dump(converted_data, f, indent=2, ensure_ascii=False)
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--data_path", default="./data/japanese_persona_chat.xlsx")
+    parser.add_argument("--out_path", default="./data/converted.json")
+    args = parser.parse_args()
+    main(args)
