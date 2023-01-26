@@ -2,14 +2,21 @@
 
 [Simple Transformers](https://simpletransformers.ai/)の[ConvAIModel](https://simpletransformers.ai/docs/convAI-specifics/)を、NTT様の公開してくださったJPersonaChatでファインチューニングするためのプログラムです。
 
-ConvAIModelをrinna社様の[日本語GPT2](https://huggingface.co/rinna/japanese-gpt2-medium)に対応させたファインチューニング用のスクリプトと、JPersonaChatをConvAIModelでファインチューニングするためのデータフォーマットに変換するためのスクリプトを含みます。
+JPersonaChatをConvAIModelでファインチューニングするためのデータフォーマットに変換するためのスクリプトと、ConvAIModelをrinna社様の[日本語GPT2](https://huggingface.co/rinna/japanese-gpt2-medium)に対応させたファインチューニング用のスクリプトを含みます。
+
 データフォーマットの詳細は[ここ](https://simpletransformers.ai/docs/convAI-data-formats/#data-formats)で確認してください。
 
 ## 1. データ準備
 
-実行前に[ここ](https://www.dropbox.com/s/sda9wzexh7ntlij/japanese_persona_chat.xlsx?dl=0)からNTT様の公開しているJPersonaChatのデータをダウンロードし、`data/`以下に配置してください．
+実行前に[ここ](https://www.dropbox.com/s/sda9wzexh7ntlij/japanese_persona_chat.xlsx?dl=0)からNTT様の公開しているJPersonaChatのデータをダウンロードし、`./data`以下に配置してください。
 
 ## 2. フォーマット変換
+
+実行ファイルはPythonスクリプト(`convert.py`)とJupyter notebook(`convert.ipynb`)の2種類ありますが、両方とも動作は同じです。
+
+Pythonスクリプトで実行する場合、`python ./convert.py`を実行すると、変換したファイル(`converted.json`)が`./data`以下に出力されます。
+
+Jupyter notebookで実行する場合は、`DATA_PATH`に記載されたパスにJPersonaChatデータをアップロードしてください。
 
 ## 3. ファインチューニング
 
