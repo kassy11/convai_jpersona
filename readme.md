@@ -18,4 +18,5 @@ ConvAIModelをrinna社様の[日本語GPT2](https://huggingface.co/rinna/japanes
 以下を参考にさせていただきました。
 
 - [Exe-dev/Jperchat_to_perchat: NTT様の日本語版ペルソナチャットから本家ペルソナチャットのフォーマットに変換するプログラム](https://github.com/Exe-dev/Jperchat_to_perchat)
+- [japanese-dialog-transformers/extract_persona_chat.py at main · nttcslab/japanese-dialog-transformers](https://github.com/nttcslab/japanese-dialog-transformers/blob/main/scripts/extract_persona_chat.py)
 - [【Python】rinnaのGPT-2を使って個性を持つ会話の流れを保持して会話できるAI（chatbot）を作ってみた！おまけでタチコマを再現してみた](https://zanote.net/ai/chatbot1/)
