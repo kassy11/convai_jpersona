@@ -83,7 +83,7 @@ def _get_incorrect_candidates(all_utterance, correct_utterance, sample_size):
     return incorrect_candidates
 
 
-def convert_data(persona_data, dialog_data, all_utterance):
+def convert(persona_data, dialog_data, all_utterance, converted_data_size):
     converted_data = []
     for pid, persona in tqdm(persona_data.items()):
         for speaker_id in SPEAKER_IDS:  # ['A', 'B']
@@ -109,8 +109,9 @@ def convert_data(persona_data, dialog_data, all_utterance):
                 incorrect_candidates = _get_incorrect_candidates(
                     all_utterance, speaker_dialog, SAMPLE_SIZE
                 )
+                # The last candidate is the ground truth response observed in the conversational data,
+                # others is randomly selected
                 candidates = incorrect_candidates + [speaker_dialog]
-                # candidates = [speaker_dialog]
 
                 if not previous_speaker_dialog:
                     history = previous_history + [another_speaker_dialog]
@@ -130,19 +131,36 @@ def convert_data(persona_data, dialog_data, all_utterance):
                 previous_speaker_dialog = speaker_dialog
 
             converted_data.append(converted_dict)
+            if converted_data_size and len(converted_data) == converted_data_size:
+                return converted_data
     return converted_data
 
 
 def main(args):
     persona_data, dialog_data, all_utterance = get_data(args.data_path)
-    converted_data = convert_data(persona_data, dialog_data, all_utterance)
+    converted_data = convert(
+        persona_data, dialog_data, all_utterance, args.converted_data_size
+    )
     with open(args.out_path, "w", encoding="utf-8") as f:
         json.dump(converted_data, f, indent=2, ensure_ascii=False)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data_path", default="./data/japanese_persona_chat.xlsx")
-    parser.add_argument("--out_path", default="./data/converted.json")
+    parser.add_argument(
+        "--data_path",
+        default="./data/japanese_persona_chat.xlsx",
+        help="Relative path to input file.",
+    )
+    parser.add_argument(
+        "--out_path",
+        default="./data/converted.json",
+        help="Relative path to output file.",
+    )
+    parser.add_argument(
+        "--converted_data_size",
+        type=int,
+        help="Data size to be converted. If no value, all data will be converted.",
+    )
     args = parser.parse_args()
     main(args)
