@@ -8,10 +8,6 @@ SHEET_NAME = {"PERSONA_LIST": "ペルソナリスト", "DIALOG": "対話"}
 SPEAKER_IDS = ["A", "B"]
 SPEAKER_B_GREETING = "こんにちは。"
 
-# See: https://github.com/huggingface/transfer-learning-conv-ai/blob/master/example_entry.py#L5
-# WARN: the evidence is not known.
-SAMPLE_SIZE = 18
-
 # See: https://simpletransformers.ai/docs/convAI-data-formats/#data-formats
 CONVERTED_KEYS = {
     "PERSONALITY": "personality",
@@ -83,7 +79,9 @@ def _get_incorrect_candidates(all_utterance, correct_utterance, sample_size):
     return incorrect_candidates
 
 
-def convert(persona_data, dialog_data, all_utterance, converted_data_size):
+def convert(
+    persona_data, dialog_data, all_utterance, num_candidates, converted_data_size
+):
     converted_data = []
     for pid, persona in tqdm(persona_data.items()):
         for speaker_id in SPEAKER_IDS:  # ['A', 'B']
@@ -107,7 +105,7 @@ def convert(persona_data, dialog_data, all_utterance, converted_data_size):
                 speaker_dialogs, another_speaker_dialogs
             ):
                 incorrect_candidates = _get_incorrect_candidates(
-                    all_utterance, speaker_dialog, SAMPLE_SIZE
+                    all_utterance, speaker_dialog, num_candidates - 1
                 )
                 # The last candidate is the ground truth response observed in the conversational data,
                 # others is randomly selected
@@ -139,7 +137,11 @@ def convert(persona_data, dialog_data, all_utterance, converted_data_size):
 def main(args):
     persona_data, dialog_data, all_utterance = get_data(args.data_path)
     converted_data = convert(
-        persona_data, dialog_data, all_utterance, args.converted_data_size
+        persona_data,
+        dialog_data,
+        all_utterance,
+        args.num_candidates,
+        args.converted_data_size,
     )
 
     if args.out_path:
@@ -150,7 +152,10 @@ def main(args):
         out_path = "./data/converted.json"
 
     with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(converted_data, f, indent=2, ensure_ascii=False)
+        if args.is_indent:
+            json.dump(converted_data, f, indent=2, ensure_ascii=False)
+        else:
+            json.dump(converted_data, f, ensure_ascii=False)
 
 
 if __name__ == "__main__":
@@ -158,16 +163,30 @@ if __name__ == "__main__":
     parser.add_argument(
         "--data_path",
         default="./data/japanese_persona_chat.xlsx",
-        help="Relative path to input file.",
+        help="Relative path to input .xlsx file.",
     )
     parser.add_argument(
         "--out_path",
-        help="Relative path to output file.",
+        help="Relative path to output .json file.",
     )
     parser.add_argument(
         "--converted_data_size",
         type=int,
         help="Data size to be converted. If no value, all data will be converted.",
+    )
+
+    parser.add_argument(
+        "--num_candidates",
+        default=5,
+        type=int,
+        help="Number of candidates for training.",
+    )
+
+    parser.add_argument(
+        "--is_indent",
+        default=False,
+        type=bool,
+        help="Whether to indent the converted .json file.",
     )
     args = parser.parse_args()
     main(args)
