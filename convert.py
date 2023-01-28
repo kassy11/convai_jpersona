@@ -154,29 +154,45 @@ def main(args):
 
     train_data = converted_data[:train_data_size]
     eval_data = converted_data[train_data_size:]
-    print(len(train_data), len(eval_data))
+    print("train data size = {}".format(len(train_data)))
+    print("eval data size = {}".format(len(eval_data)))
 
     if args.out_dir:
         out_dir = args.out_dir
     else:
         out_dir = "./data"
 
-    with open(
-        out_dir + "/train_{}.json".format(converted_data_size), "w", encoding="utf-8"
-    ) as f:
-        if args.is_indent:
-            json.dump(train_data, f, indent=2, ensure_ascii=False)
-        else:
-            json.dump(train_data, f, ensure_ascii=False)
-
-    if eval_data:
+    if args.is_split_eval:
         with open(
-            out_dir + "/eval_{}.json".format(converted_data_size), "w", encoding="utf-8"
+            out_dir + "/train_{}.json".format(converted_data_size),
+            "w",
+            encoding="utf-8",
         ) as f:
             if args.is_indent:
-                json.dump(eval_data, f, indent=2, ensure_ascii=False)
+                json.dump(train_data, f, indent=2, ensure_ascii=False)
             else:
-                json.dump(eval_data, f, ensure_ascii=False)
+                json.dump(train_data, f, ensure_ascii=False)
+
+        if eval_data:
+            with open(
+                out_dir + "/eval_{}.json".format(converted_data_size),
+                "w",
+                encoding="utf-8",
+            ) as f:
+                if args.is_indent:
+                    json.dump(eval_data, f, indent=2, ensure_ascii=False)
+                else:
+                    json.dump(eval_data, f, ensure_ascii=False)
+    else:
+        with open(
+            out_dir + "/converted_{}.json".format(converted_data_size),
+            "w",
+            encoding="utf-8",
+        ) as f:
+            if args.is_indent:
+                json.dump(train_data, f, indent=2, ensure_ascii=False)
+            else:
+                json.dump(train_data, f, ensure_ascii=False)
 
 
 if __name__ == "__main__":
