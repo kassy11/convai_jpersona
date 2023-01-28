@@ -141,7 +141,15 @@ def main(args):
     converted_data = convert(
         persona_data, dialog_data, all_utterance, args.converted_data_size
     )
-    with open(args.out_path, "w", encoding="utf-8") as f:
+
+    if args.out_path:
+        out_path = args.out_path
+    elif args.converted_data_size:
+        out_path = "./data/converted_{}.json".format(args.converted_data_size)
+    else:
+        out_path = "./data/converted.json"
+
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(converted_data, f, indent=2, ensure_ascii=False)
 
 
@@ -154,7 +162,6 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--out_path",
-        default="./data/converted.json",
         help="Relative path to output file.",
     )
     parser.add_argument(
