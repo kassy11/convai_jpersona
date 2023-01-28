@@ -16,9 +16,11 @@ CONVERTED_KEYS = {
     "HISTORY": "history",
 }
 
+TRAIN_DATA_SPLIT_RATIO = 0.8
 
-def get_data(data_path):
-    wb = openpyxl.load_workbook(data_path, data_only=True)
+
+def get_data(data_file_path):
+    wb = openpyxl.load_workbook(data_file_path, data_only=True)
     persona_data = _get_persona_data(wb)
     dialog_data, all_utterance = _get_dialog_data(wb)
     return persona_data, dialog_data, all_utterance
@@ -135,7 +137,7 @@ def convert(
 
 
 def main(args):
-    persona_data, dialog_data, all_utterance = get_data(args.data_path)
+    persona_data, dialog_data, all_utterance = get_data(args.data_file_path)
     converted_data = convert(
         persona_data,
         dialog_data,
@@ -144,30 +146,49 @@ def main(args):
         args.converted_data_size,
     )
 
-    if args.out_path:
-        out_path = args.out_path
-    elif args.converted_data_size:
-        out_path = "./data/converted_{}.json".format(args.converted_data_size)
+    converted_data_size = len(converted_data)
+    if args.is_split_eval:
+        train_data_size = int(converted_data_size * TRAIN_DATA_SPLIT_RATIO)
     else:
-        out_path = "./data/converted.json"
+        train_data_size = converted_data_size
 
-    with open(out_path, "w", encoding="utf-8") as f:
+    train_data = converted_data[:train_data_size]
+    eval_data = converted_data[train_data_size:]
+    print(len(train_data), len(eval_data))
+
+    if args.out_dir:
+        out_dir = args.out_dir
+    else:
+        out_dir = "./data"
+
+    with open(
+        out_dir + "/train_{}.json".format(converted_data_size), "w", encoding="utf-8"
+    ) as f:
         if args.is_indent:
-            json.dump(converted_data, f, indent=2, ensure_ascii=False)
+            json.dump(train_data, f, indent=2, ensure_ascii=False)
         else:
-            json.dump(converted_data, f, ensure_ascii=False)
+            json.dump(train_data, f, ensure_ascii=False)
+
+    if eval_data:
+        with open(
+            out_dir + "/eval_{}.json".format(converted_data_size), "w", encoding="utf-8"
+        ) as f:
+            if args.is_indent:
+                json.dump(eval_data, f, indent=2, ensure_ascii=False)
+            else:
+                json.dump(eval_data, f, ensure_ascii=False)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--data_path",
+        "--data_file_path",
         default="./data/japanese_persona_chat.xlsx",
         help="Relative path to input .xlsx file.",
     )
     parser.add_argument(
-        "--out_path",
-        help="Relative path to output .json file.",
+        "--out_dir",
+        help="Relative dir to output .json file.",
     )
     parser.add_argument(
         "--converted_data_size",
@@ -184,9 +205,16 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--is_indent",
-        default=False,
+        default=True,
         type=bool,
         help="Whether to indent the converted .json file.",
+    )
+
+    parser.add_argument(
+        "--is_split_eval",
+        default=False,
+        type=bool,
+        help="If set True, converted data will be saved separately for training and evaluation at 8:2.",
     )
     args = parser.parse_args()
     main(args)
