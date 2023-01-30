@@ -221,7 +221,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--is_indent",
-        default=True,
+        default=False,
         type=bool,
         help="Whether to indent the converted .json file.",
     )
