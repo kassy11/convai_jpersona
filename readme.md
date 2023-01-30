@@ -1,8 +1,8 @@
 # ConvAI finetuned by JPesonaChat
 
-[Simple Transformers](https://simpletransformers.ai/)の[ConvAIModel](https://simpletransformers.ai/docs/convAI-specifics/)を、NTT様の公開してくださったJPersonaChatでファインチューニングするためのプログラムです。
+NTT様の公開してくださったJPersonaChatを使って、rinna社様のGPT2モデルをファインチューニングするためのプログラムです。
 
-JPersonaChatをConvAIModelでファインチューニングするためのデータフォーマットに変換するためのスクリプトと、ConvAIModelをrinna社様の[日本語GPT2](https://huggingface.co/rinna/japanese-gpt2-medium)に対応させたファインチューニング用のスクリプトを含みます。
+[Simple Transformers](https://simpletransformers.ai/)の[ConvAIModel](https://simpletransformers.ai/docs/convAI-specifics/)をrinna社様の[日本語GPT2](https://huggingface.co/rinna/japanese-gpt2-small)に対応させたファインチューニング用のスクリプトと、JPersonaChatをConvAIModelでファインチューニングするためのデータフォーマットに変換するスクリプトを含みます。
 
 データフォーマットの詳細は[ここ](https://simpletransformers.ai/docs/convAI-data-formats/#data-formats)で確認してください。
 
@@ -19,6 +19,8 @@ Pythonスクリプトで実行する場合、`python ./convert.py`を実行す�
 Jupyter notebookで実行する場合は、`DATA_PATH`に記載されたパスにJPersonaChatデータをアップロードしてください。
 
 ## 3. ファインチューニング
+
+フォーマット変換と同様に、実行ファイルはPythonスクリプト(`train.py`)とJupyter notebook(`train.ipynb`)の2種類ありますが、両方とも動作は同じです。
 
 ## 謝辞
 
