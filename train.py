@@ -7,15 +7,11 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    # TODO: ここは基本的に指定せずに、ConvAIの引数と合わせるべきかも
     parser.add_argument(
         "--train_file_path",
-        default="./data/train.json",
+        default="./data/converted.json",
         help="Relative path to train .json file.",
-    )
-    parser.add_argument(
-        "--eval_file_path",
-        default="./data/eval.json",
-        help="Relative path to output .json file.",
     )
     parser.add_argument(
         "--converted_data_size",

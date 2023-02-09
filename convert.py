@@ -34,8 +34,12 @@ def _get_persona_data(wb):
 
         pid, persona_a, persona_b = [v.value for v in lines][1:4]
         persona_data[pid] = {}
-        persona_data[pid][SPEAKER_IDS[0]] = persona_a.split("\n")
-        persona_data[pid][SPEAKER_IDS[1]] = persona_b.split("\n")
+        persona_data[pid][SPEAKER_IDS[0]] = [
+            persona.strip() for persona in persona_a.split("\n")
+        ]
+        persona_data[pid][SPEAKER_IDS[1]] = [
+            persona.strip() for persona in persona_b.split("\n")
+        ]
 
     # persona_data {'persona id': {'A': ['aaa', 'bbb'], 'B': ['cccc', 'ddd']}}
     return persona_data
@@ -51,6 +55,8 @@ def _get_dialog_data(wb):
             continue
 
         pid, speaker_id, dialog = [v.value for v in lines][1:4]
+        dialog = dialog.strip()
+
         if pid not in dialog_data:
             dialog_data[pid] = {}
         if speaker_id not in dialog_data[pid] and speaker_id in SPEAKER_IDS:
@@ -160,7 +166,7 @@ def main(args):
         out_dir = "./data"
 
     with open(
-        out_dir + "/converted_{}.json".format(converted_data_size),
+        out_dir + "/converted.json",
         "w",
         encoding="utf-8",
     ) as f:
