@@ -16,8 +16,6 @@ CONVERTED_KEYS = {
     "HISTORY": "history",
 }
 
-TRAIN_DATA_SPLIT_RATIO = 0.8
-
 
 def get_data(data_file_path):
     wb = openpyxl.load_workbook(data_file_path, data_only=True)
@@ -147,52 +145,29 @@ def main(args):
     )
 
     converted_data_size = len(converted_data)
-    if args.is_split_eval:
-        train_data_size = int(converted_data_size * TRAIN_DATA_SPLIT_RATIO)
-    else:
-        train_data_size = converted_data_size
+    train_data_size = int(converted_data_size * args.split_ratio)
 
     train_data = converted_data[:train_data_size]
-    eval_data = converted_data[train_data_size:]
+    valid_data = converted_data[train_data_size:]
     print("train data size = {}".format(len(train_data)))
-    print("eval data size = {}".format(len(eval_data)))
+    print("valid data size = {}".format(len(valid_data)))
+
+    output_data = {"train": train_data, "valid": valid_data}
 
     if args.out_dir:
         out_dir = args.out_dir
     else:
         out_dir = "./data"
 
-    if args.is_split_eval:
-        with open(
-            out_dir + "/train_{}.json".format(converted_data_size),
-            "w",
-            encoding="utf-8",
-        ) as f:
-            if args.is_indent:
-                json.dump(train_data, f, indent=2, ensure_ascii=False)
-            else:
-                json.dump(train_data, f, ensure_ascii=False)
-
-        if eval_data:
-            with open(
-                out_dir + "/eval_{}.json".format(converted_data_size),
-                "w",
-                encoding="utf-8",
-            ) as f:
-                if args.is_indent:
-                    json.dump(eval_data, f, indent=2, ensure_ascii=False)
-                else:
-                    json.dump(eval_data, f, ensure_ascii=False)
-    else:
-        with open(
-            out_dir + "/converted_{}.json".format(converted_data_size),
-            "w",
-            encoding="utf-8",
-        ) as f:
-            if args.is_indent:
-                json.dump(train_data, f, indent=2, ensure_ascii=False)
-            else:
-                json.dump(train_data, f, ensure_ascii=False)
+    with open(
+        out_dir + "/converted_{}.json".format(converted_data_size),
+        "w",
+        encoding="utf-8",
+    ) as f:
+        if args.is_indent:
+            json.dump(output_data, f, indent=2, ensure_ascii=False)
+        else:
+            json.dump(output_data, f, ensure_ascii=False)
 
 
 if __name__ == "__main__":
@@ -227,10 +202,10 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--is_split_eval",
-        default=False,
-        type=bool,
-        help="If set True, converted data will be saved separately for training and evaluation at 8:2.",
+        "--split_ratio",
+        default=0.8,
+        type=float,
+        help="Ratio of split between training data and evaluation data after conversion.",
     )
     args = parser.parse_args()
     main(args)
